@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="static/jquery3.js"></script>
+  <script>
+    /*
+        Promise 可以封装异步操作，参数：可以向下传递
+            resolve: 操作成功来解析数据
+            reject: 操作失败来拒绝
+     */
+    $(() => {
+
+      let p = new Promise((resolve,reject) => {
+        $.ajax({
+          url: 'user.json',
+          success(user){
+            console.log('用户',user)
+            resolve(user) //向下传递user
+          },
+          error(e){reject(e)} //向下传递异常
+        })
+      })
+
+
+      //then()执行完，返回Promise
+      p.then(user => {    //上面resolve(user)执行成功以后，要执行的内容
+        //console.log(user)
+        return new Promise((resolve,reject) => {
+          $.ajax({
+            url: `user_cores_${user.id}.json`,
+            success(corse){
+              console.log('科目',corse)
+              resolve(corse)
+            },
+            error(e){reject(e)}
+          })
+        })
+        //因为还有后续操作，所以还需要调用 then()
+      }).then(corse => {
+        //后续没有操作了，不用再封装 Promise
+        //就不能在使用 resolve,reject
+        $.ajax({
+          url: `corse_score_${corse.id}.json`,
+          success(score){
+            console.log('成绩',score)
+          },
+          error(e){console.log(e)}
+        })
+      })
+
+
+
+    })
+  </script>
+</head>
+<body>
+
+</body>
+</html>

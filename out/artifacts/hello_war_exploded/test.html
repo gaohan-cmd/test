@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="static/jquery3.js"></script>
+    <script>
+        /*
+            1.查出当前用户信息
+            2.按照当前用户信息的id查出他的科目
+            3.按照当前科目id查出分数
+         */
+        $(() => {
+            $.ajax({
+                url: 'user.json',
+                success(user){
+                    console.log('查询到的用户',user)
+                    $.ajax({
+                        url: `user_cores_${user.id}.json`,
+                        success(corse){
+                            console.log('查到的科目',corse)
+                            $.ajax({
+                                url: `corse_score_${corse.id}.json`,
+                                success(socre){
+                                    console.log('查到的成绩',socre)
+                                },
+                                error(e){
+                                    console.log(e)
+                                }
+                            })
+                        },
+                        error(e){
+                            console.log(e)
+                        }
+                    })
+                },
+                error(e){
+                    console.log(e)
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+
+</body>
+</html>
